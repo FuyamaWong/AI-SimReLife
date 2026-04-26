@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI分支人生模拟器｜DeepSeek版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: #121330;
+            color: #fff;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .api-bar {
+            background: #1a1b33;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .api-bar input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: none;
+            background: #252744;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .api-bar button {
+            padding: 10px 16px;
+            background: #cc9933;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffdd77;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 14px;
+            color: #ffdd77;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: #1b1c3a;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 18px;
+            border: 1px solid #333455;
+        }
+
+        .form-item {
+            margin-bottom: 18px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        select, textarea, input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #252744;
+            border: 1px solid #444566;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .attr-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .attr-item {
+            text-align: center;
+            background: #252744;
+            padding: 10px 6px;
+            border-radius: 8px;
+        }
+
+        .attr-item label {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .attr-item input {
+            width: 100%;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .talent-box {
+            background: #252744;
+            padding: 12px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .btn:disabled {
+            background: #444 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-gold {
+            background: #cc9933;
+        }
+
+        .btn-red {
+            background: #a83333;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .status-card {
+            background: #252744;
+            padding: 14px 8px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: #66ccff;
+            margin-top: 6px;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 14px;
+            margin: 8px 0;
+            background: #252744;
+            border: 1px solid #444566;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-btn.active {
+            background: #cc9933;
+            border-color: #ffdd77;
+            color: #fff;
+        }
+
+        .timeline {
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .year-item {
+            background: #252744;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #cc9933;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        .tip {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .custom-input {
+            margin-top: 12px;
+        }
+
+        .loading {
+            color: #ffdd77;
+            font-size: 15px;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="api-bar">
+        <span>🔑 DeepSeek API密钥：</span>
+        <input type="text" id="userApiKey" placeholder="粘贴DeepSeek API密钥">
+        <button onclick="saveApi()">保存</button>
+    </div>
+
+    <h1>🌍 AI分支人生模拟器</h1>
+
+    <!-- 开局 -->
+    <div class="card" id="startPanel">
+        <h2>📜 创建角色</h2>
+
+        <div class="form-item">
+            <label>🌐 世界观</label>
+            <select id="worldSel">
+                <option value="现代现实都市">现代现实都市</option>
+                <option value="古风古代王朝">古风古代王朝</option>
+                <option value="末世废土求生">末世废土求生</option>
+                <option value="星际科幻联邦">星际科幻联邦</option>
+                <option value="玄幻修仙飞升">玄幻修仙飞升</option>
+                <option value="中世纪骑士王国">中世纪骑士王国</option>
+                <option value="高魔奇幻世界">高魔奇幻世界</option>
+                <option value="赛博朋克都市">赛博朋克都市</option>
+                <option value="蒸汽机械时代">蒸汽机械时代</option>
+                <option value="灵气复苏觉醒">灵气复苏觉醒</option>
+                <option value="洪荒上古时代">洪荒上古时代</option>
+                <option value="星际虫族战场">星际虫族战场</option>
+                <option value="深海海底文明">深海海底文明</option>
+                <option value="平行异世界">平行异世界</option>
+                <option value="丧尸围城生存">丧尸围城生存</option>
+                <option value="古风宫廷后宫">古风宫廷后宫</option>
+                <!-- 新增IP世界观 -->
+                <option value="原神提瓦特大陆">原神提瓦特大陆</option>
+                <option value="崩坏星穹铁道宇宙">崩坏星穹铁道宇宙</option>
+                <option value="无职转生异世界">无职转生异世界</option>
+                <option value="哈利波特魔法世界">哈利波特魔法世界</option>
+                <option value="斗罗大陆武魂世界">斗罗大陆武魂世界</option>
+                <option value="鬼灭之刃和风鬼杀">鬼灭之刃和风鬼杀</option>
+                <option value="custom">自定义世界观</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="worldCustomWrap">
+            <textarea id="worldCustom" placeholder="描述世界规则、势力、力量体系、核心设定（越详细越贴合）"></textarea>
+        </div>
+
+        <div class="form-item">
+            <label>🧬 种族</label>
+            <select id="raceSel">
+                <option value="普通人类">普通人类</option>
+                <option value="高等精灵">高等精灵</option>
+                <option value="山地矮人">山地矮人</option>
+                <option value="暗夜血族">暗夜血族</option>
+                <option value="兽人战士">兽人战士</option>
+                <option value="修仙灵体">修仙灵体</option>
+                <option value="机械义体人">机械义体人</option>
+                <option value="妖族血脉">妖族血脉</option>
+                <option value="星际异族">星际异族</option>
+                <option value="custom">自定义种族</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="raceCustomWrap">
+            <input type="text" id="raceCustom" placeholder="种族特长、生理特征、世界观适配性（如：血族怕阳光、精灵长寿）"></div>
+        </div>
+
+        <div class="form-item">
+            <label>🎓 出身背景</label>
+            <select id="bornSel">
+                <option value="寒门平民">寒门平民</option>
+                <option value="商贾之家">商贾之家</option>
+                <option value="贵族子嗣">贵族子嗣</option>
+                <option value="山野孤儿">山野孤儿</option>
+                <option value="宗门传人">宗门传人</option>
+                <option value="军旅世家">军旅世家</option>
+                <option value="贫民窟出身">贫民窟出身</option>
+                <option value="custom">自定义出身</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="bornCustomWrap">
+            <textarea id="bornCustom" placeholder="家庭、童年、成长环境、与世界观的关联（如：末世废土的拾荒者家庭）"></textarea>
+        </div>
+
+        <div class="form-item">
+            <label>📝 人物背景描述</label>
+            <textarea id="charDesc" placeholder="性格、执念、梦想、秘密、弱点，需贴合世界观（如：修仙世界的求道者、赛博朋克的反义体改造者）"></textarea>
+        </div>
+
+        <div class="form-item">
+            <label>📊 初始属性</label>
+            <div class="attr-grid">
+                <div class="attr-item"><label>财富</label><input type="number" id="initWealth" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>人脉</label><input type="number" id="initSocial" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>资源</label><input type="number" id="initRes" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>体质</label><input type="number" id="initPhys" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>心智</label><input type="number" id="initMind" value="30" min="1" max="100"></div>
+            </div>
+        </div>
+
+        <div class="form-item">
+            <label>✨ 先天天赋</label>
+            <div class="talent-box" id="talentList">生成中...</div>
+        </div>
+
+        <button class="btn btn-gold" id="startBtn">🚀 开启人生</button>
+
+        <div class="btn-row">
+            <button style="background:#cc9933;" id="loadSaveBtn">📂 读取存档</button>
+            <button style="background:#a83333;" id="delSaveBtn">🗑️ 删除存档</button>
+        </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="gamePanel" class="hide">
+        <div class="card">
+            <div class="btn-row">
+                <button style="background:#cc9933" id="saveBtn">💾 保存</button>
+                <button style="background:#a83333" id="restartBtn">🔄 重新开局</button>
+            </div>
+            <h2>📊 年龄：<span id="nowAge">0</span> 岁</h2>
+            <div class="status-row">
+                <div class="status-card"><div>💰财富</div><div class="status-val" id="valWealth">30</div></div>
+                <div class="status-card"><div>🤝人脉</div><div class="status-val" id="valSocial">30</div></div>
+                <div class="status-card"><div>📦资源</div><div class="status-val" id="valRes">30</div></div>
+                <div class="status-card"><div>💪体质</div><div class="status-val" id="valPhys">30</div></div>
+                <div class="status-card"><div>🧠心智</div><div class="status-val" id="valMind">30</div></div>
+            </div>
+            <div style="margin-top:10px; color:#ffdd77;" id="eventTypeTip">本年度：成长阶段</div>
+        </div>
+
+        <div class="card hide" id="eventPanel">
+            <div id="loadingTip" class="loading">⏳ 事件加载中，请稍候...</div>
+            <div id="eventContent" class="hide">
+                <h3>📜 年度事件</h3>
+                <div id="eventText" style="margin:10px 0; line-height:1.6;"></div>
+                <div id="optionList"></div>
+                <div class="custom-input">
+                    <input type="text" id="customAction" placeholder="✍️ 自定义行动（输入你想做的事，需贴合当前世界观和年龄）">
+                </div>
+                <button class="btn btn-gold" id="confirmBtn" style="margin-top:16px;">✅ 确定选择</button>
+                <div class="tip">💡 选择AI选项 或 填写自定义行动，再点确定</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📖 人生履历</h3>
+            <div class="timeline" id="timeline"></div>
+        </div>
+    </div>
+
+    <!-- 结局 -->
+    <div class="card hide" id="endPanel">
+        <h2>⚰️ 一生落幕</h2>
+        <div id="endContent" style="line-height:1.8; margin:16px 0; white-space: pre-line;"></div>
+        <button class="btn btn-gold" id="endRestartBtn">🔄 重新开始</button>
+    </div>
+
+</div>
+
+<script>
+// ==================== 核心配置（DeepSeek） ====================
+let API_KEY = localStorage.getItem("deepseekKey") || "";
+const ENDPOINT = "https://api.deepseek.com/chat/completions";
+const MODEL = "deepseek-chat"; // 或 deepseek-reasoner / deepseek-v4-flash
+const SAVE_KEY = "lifeSim";
+
+// 游戏数据
+let game = {
+    age:0, world:"", race:"", born:"", charDesc:"", talents:[],
+    attr:{wealth:30, social:30, res:30, phys:30, mind:30},
+    history:[], isDead:false, lastEvent:0,
+    currentEvent:"", selected:"", result:"", deathReason:""
+};
+
+// 新增：预设世界观描述库
+const worldPresetDesc = {
+    "原神提瓦特大陆": "提瓦特大陆由七神统治七国（蒙德、璃月、稻妻、须弥、枫丹、纳塔、至冬），核心力量为元素力（风、岩、雷、草、水、火、冰），人类可通过神之眼引导元素力，存在深渊、坎瑞亚、天理等高层设定，魔物横行，旅行者可穿梭世界，有锻造、烹饪、秘境、魔神任务等核心玩法体系，七国各有独特文化与规则（如璃月的契约、蒙德的自由）。",
+    "崩坏星穹铁道宇宙": "横跨多个星球的星际冒险世界，核心为星穹列车与开拓之旅，存在星神、命途（开拓、毁灭、存护、巡猎、智识、同谐、虚无）、光锥、遗器等设定，不同星球有独特文明（如贝洛伯格的冰原文明、仙舟罗浮的仙盟文明），崩坏能、星核、星槎等核心元素，势力包括星核猎手、星际和平公司、巡猎星神麾下的仙舟联盟等。",
+    "无职转生异世界": "剑与魔法的低魔异世界，存在魔族、兽族、人族、精灵等种族，魔法分为水、火、土、风、土、光、暗等属性，有魔大陆、中央大陆、阿苏拉王国等地域划分，核心规则为「前世记忆可转生」，存在上级魔族、人神、转移迷宫、魔法公会等设定，实力体系包括魔法等级（初~帝级）、剑技等级，社会存在明显的阶级差异，冒险者公会是核心组织。",
+    "哈利波特魔法世界": "隐藏于麻瓜世界的魔法文明，核心为霍格沃茨魔法学校（格兰芬多、斯莱特林、赫奇帕奇、拉文克劳四学院），魔法体系包括魔咒、黑魔法、魔药、占卜、变形术等，存在巫师、麻瓜、哑炮、巨人、狼人、摄魂怪等族群，势力包括凤凰社、食死徒、魔法部、霍格沃茨董事会，核心道具为魔杖、飞天扫帚、活点地图、魂器等，有魁地奇、三强争霸赛等特色活动。",
+    "斗罗大陆武魂世界": "每个人出生都会觉醒武魂（兽武魂/器武魂），武魂可通过魂环/魂骨强化，魂环来自魂兽（年限从百年到百万年），存在封号斗罗、极限斗罗、神祇等实力等级，势力包括史莱克学院、武魂殿、天斗帝国、星罗帝国，核心设定为双生武魂、武魂融合技、唐门暗器、仙草、海神岛、杀戮之都等，魂师分为强攻、敏攻、控制、辅助、防御等系别。",
+    "鬼灭之刃和风鬼杀": "大正时代的日本和风世界，人类与鬼共存，鬼由鬼舞辻无惨创造，惧怕阳光与紫藤花，可通过血鬼术战斗，人类可通过呼吸法（水、雷、火、风、岩、音、虫、霞、恋、蛇、兽、日之呼吸）提升实力，核心组织为鬼杀队（柱级为最高战力），存在十二鬼月、斑纹、赫刀、通透世界等核心设定，鬼以人类为食，鬼杀队以斩鬼为使命。"
+};
+
+let autoTimer = null;
+const $ = id => document.getElementById(id);
+
+// 页面加载时立即生成天赋（修复天赋池不生成bug）
+window.onload = function() {
+    genTalents();
+};
+
+// 保存API
+function saveApi() {
+    const v = $("userApiKey").value.trim();
+    if (!v) return alert("请输入密钥");
+    API_KEY = v;
+    localStorage.setItem("deepseekKey", v);
+    alert("✅ DeepSeek密钥保存成功");
+}
+
+// 切换自定义（新增：世界观选择时自动填充预设描述）
+["worldSel","raceSel","bornSel"].forEach(id => {
+    $(id).onchange = function(){
+        const wrapId = this.id.replace("Sel","CustomWrap");
+        $(wrapId).className = this.value==="custom"?"form-item":"form-item hide";
+        
+        // 世界观选择时自动填充预设描述
+        if(id === "worldSel" && this.value !== "custom" && worldPresetDesc[this.value]){
+            $("worldCustom").value = worldPresetDesc[this.value];
+        }
+    }
+});
+
+// ==================== 超大天赋池（120+）====================
+function genTalents() {
+    const pool = [
+        // 顶级神级（橙色）
+        "天命之子：全属性+8，逢凶化吉",
+        "万古天骄：全属性+6，机缘翻倍",
+        "半神之躯：全属性+5，寿命大幅延长",
+        "大道眷顾：所有收益+50%，无负面事件",
+        "位面之子：关键事件必定最优解",
+        "不死仙体：体质低于10也不会猝死",
+        "万世才情：心智永远不低于50",
+        "聚宝仙盆：财富每年自动+3",
+        "无上人脉：人脉永远不低于60",
+        "气运滔天：所有事件偏向最好结果",
+
+        // 强力天赋（紫色）
+        "力贯千钧：体质+15",
+        "绝顶聪慧：心智+15",
+        "天生富贵：财富+15",
+        "八方交友：人脉+15",
+        "坐拥底蕴：资源+15",
+        "体魄无双：体质+12",
+        "神机妙算：心智+12",
+        "经商鬼才：财富+12",
+        "人缘极佳：人脉+12",
+        "家底丰厚：资源+12",
+        "文武双全：体质+7，心智+7",
+        "全能天骄：全属性+4",
+        "钢铁身躯：伤病概率大幅降低",
+        "天命福运：小概率躲过所有致命事件",
+        "贵人相助：每年大概率遇贵人",
+        "机缘护体：资源永不暴跌",
+
+        // 通用优质（蓝色）
+        "外圆内方：人脉+8，心智-2",
+        "吃苦耐劳：体质+8，财富-2",
+        "精打细算：财富+8，人脉-2",
+        "稳扎稳打：财富+5，资源+3",
+        "意志坚定：心智+6，不易崩溃",
+        "强健体魄：体质+6，寿命+5",
+        "社交达人：人脉+6，易获信任",
+        "天赋异禀：单项随机+10",
+        "心灵手巧：资源+6，制作成功率高",
+        "乐观开朗：心智+5，压力免疫",
+        "勤学苦练：心智每年+1",
+        "健身达人：体质每年+1",
+        "理财高手：财富每年+2",
+        "人脉经营：人脉每年+1",
+        "资源囤积：资源每年+1",
+        "鸿运当头：随机属性+3",
+        "福星高照：负面效果减半",
+        "少年老成：心智+8，成熟更早",
+        "体魄强健：疾病抵抗力极强",
+
+        // 特殊机制（特色）
+        "天煞孤星：人脉-10，体质+10，心智+10",
+        "身残志坚：体质-8，其他全属性+5",
+        "寒门苦命：财富-8，爆发时属性翻倍",
+        "贵人晚遇：40岁前普通，40岁后全属性起飞",
+        "大器晚成：前半生弱，后半生极强",
+        "早年英才：年轻时全属性+5，老来稍弱",
+        "幸运锦鲤：所有事件轻微向好",
+        "躺平心态：不掉心智，不易抑郁",
+        "卷王体质：努力必有超额回报",
+        "佛系人生：平安长寿，少灾少难",
+        "红颜薄命：颜值类隐性加成，体质-5",
+        "鹤发童颜：老年体质不暴跌",
+        "宠辱不惊：心智稳定，不受打击",
+        "百折不挠：失败后反而属性+2",
+        "厚积薄发：连续平淡年后爆发属性",
+        "见微知著：心智+5，易发现机遇",
+        "长袖善舞：人脉+7，易化解矛盾",
+        "未卜先知：小概率避开坏选择",
+        "一诺千金：人脉+6，信誉极佳",
+        "勇猛果敢：体质+6，敢闯敢拼",
+
+        // 负面但有特色（增加可玩性）
+        "体弱多病：体质-8，心智+5",
+        "不善言辞：人脉-8，财富+5",
+        "冲动易怒：心智-5，体质+5",
+        "挥霍无度：财富-8，人脉+5",
+        "孤僻寡言：人脉-6，心智+6",
+        "粗心大意：资源-5，偶尔大爆",
+        "优柔寡断：心智-4，不易惹祸",
+        "守财奴：财富+6，人脉-4",
+
+        // 趣味彩蛋
+        "异界来客：偶尔获得超前信息",
+        "神秘体质：随机事件更奇幻",
+        "仙缘种子：更容易遇修仙类事件",
+        "魔性缠身：偶尔疯魔，但属性暴涨",
+        "上古血脉：体质+8，寿命+10",
+        "妖异天赋：体质+7，人脉-3",
+        "机械亲和：义体/机械类事件大优势",
+        "自然之子：体质+7，野外生存极强",
+        "灵智大开：心智+9，领悟力极强",
+        "福星伴身：小灾难自动化解",
+        "金刚不坏：体质+10，重伤不死",
+        "财运亨通：商业事件永远不亏",
+        "人心洞察：人脉+9，不遇小人",
+        "天道酬勤：付出一定有回报",
+        "逆来顺受：压力再大也不崩溃",
+        "无师自通：心智+7，自学极强",
+        "勇者无畏：危险事件反而增益",
+        "智者千虑：心智+8，极少失误",
+        "仁心厚德：人脉+8，贵人频现",
+        "钢铁意志：心智+10，绝不堕落",
+
+        // 底层生存类
+        "草根韧性：体质+5，穷但耐活",
+        "荒野求生：体质+7，乱世生存强",
+        "市井油滑：人脉+5，不易被骗",
+        "隐忍蛰伏：前期弱，后期爆发",
+        "狼性求生：体质+6，竞争极强",
+        "乱世枭雄：混乱年代属性飙升",
+        "平安喜乐：无大风大浪，安稳一生",
+        "细水长流：资源稳定，不暴涨暴跌",
+        "步步为营：每一年都稳定小幅增长"
+    ];
+    // 修复：确保随机选取不重复且数量正确
+    const shuffled = [...pool].sort(() => 0.5 - Math.random());
+    const selectedTalents = shuffled.slice(0, 3);
+    game.talents = selectedTalents;
+    $("talentList").innerHTML = selectedTalents.map(x=>`<div>• ${x}</div>`).join("");
+}
+
+// AI请求（DeepSeek兼容格式）
+async function ai(prompt){
+    try {
+        const res = await fetch(ENDPOINT, {
+            method:"POST",
+            headers:{ 
+                "Authorization":"Bearer "+API_KEY, 
+                "Content-Type":"application/json" 
+            },
+            body:JSON.stringify({ 
+                model:MODEL, 
+                messages:[{role:"user",content:prompt}], 
+                temperature:0.8, 
+                max_tokens:2048 
+            })
+        });
+        const json = await res.json();
+        return json.choices?.[0]?.message?.content || "生成失败";
+    } catch(e) {
+        return "网络异常，请检查DeepSeek API密钥";
+    }
+}
+
+// 开局
+$("startBtn").onclick = async ()=>{
+    if (!API_KEY) return alert("请先保存DeepSeek API密钥！");
+    // 处理世界观：优先使用预设描述，无预设则用选择值/自定义值
+    if($("worldSel").value === "custom"){
+        game.world = $("worldCustom").value || "自定义世界观";
+    }else{
+        game.world = worldPresetDesc[$("worldSel").value] || $("worldSel").value;
+    }
+    game.race = $("raceSel").value=="custom"?$("raceCustom").value:$("raceSel").value;
+    game.born = $("bornSel").value=="custom"?$("bornCustom").value:$("bornSel").value;
+    game.charDesc = $("charDesc").value || "普通性格";
+    game.attr.wealth=+$("initWealth").value;
+    game.attr.social=+$("initSocial").value;
+    game.attr.res=+$("initRes").value;
+    game.attr.phys=+$("initPhys").value;
+    game.attr.mind=+$("initMind").value;
+    game.age=0; game.history=[]; game.isDead=false; game.lastEvent=0;
+    game.currentEvent=game.selected=game.result=""; game.deathReason="";
+    $("startPanel").classList.add("hide");
+    $("gamePanel").classList.remove("hide");
+    startAutoNext();
+};
+
+// 自动下一年
+function startAutoNext(){
+    if(autoTimer) clearInterval(autoTimer);
+    autoTimer = setInterval(() => {
+        if(game.isDead || !$("eventPanel").classList.contains("hide")) return;
+        nextYear();
+    }, 1300);
+}
+
+// 停止自动
+function stopAuto(){
+    if(autoTimer){ clearInterval(autoTimer); autoTimer = null; }
+}
+
+// 获取年龄阶段
+function getAgeStage(age){
+    if(age<=3) return "婴儿期，完全依赖家人，无自主行为";
+    if(age<=12) return "童年期，天真懵懂，以学习、玩耍、家庭关系为主";
+    if(age<=19) return "少年期，叛逆、学业、情感萌芽、初步选择人生方向";
+    if(age<=29) return "青年期，学业、事业、爱情、奋斗、关键转折";
+    if(age<=49) return "中年期，稳定事业、家庭责任、社会地位、危机与机遇并存";
+    if(age<=69) return "中老年期，健康下滑、传承、回顾人生、潜在疾病";
+    return "晚年期，身体衰弱、福寿、离世风险高";
+}
+
+// 单年逻辑（连贯版）
+async function nextYear(){
+    if (game.isDead) return;
+
+    game.age++;
+    $("nowAge").innerText = game.age;
+    refreshUI();
+
+    // 自然死亡判定（贴合世界观的死因）
+    const worldType = game.world.includes("修仙") || game.world.includes("玄幻") || game.world.includes("洪荒") ? "修仙" : 
+                      game.world.includes("末世") || game.world.includes("丧尸") ? "末世" :
+                      game.world.includes("赛博朋克") || game.world.includes("机械") ? "赛博" :
+                      game.world.includes("古风") || game.world.includes("古代") ? "古风" :
+                      game.world.includes("原神") ? "原神" :
+                      game.world.includes("崩坏") ? "崩坏" :
+                      game.world.includes("无职转生") ? "无职转生" :
+                      game.world.includes("哈利波特") ? "魔法" :
+                      game.world.includes("斗罗大陆") ? "斗罗" :
+                      game.world.includes("鬼灭之刃") ? "鬼灭" :
+                      "现代";
+    let deathRate = 0;
+    let deathBaseReason = "";
+    if(game.attr.phys < 20){
+        deathRate = 0.15;
+        switch(worldType){
+            case "修仙": deathBaseReason = "修为停滞，寿元耗尽，灵力溃散"; break;
+            case "末世": deathBaseReason = "长期营养不良，感染废土辐射，器官衰竭"; break;
+            case "赛博": deathBaseReason = "义体排异反应加剧，神经接口坏死"; break;
+            case "古风": deathBaseReason = "年迈体衰，风寒入体，汤药无效"; break;
+            case "原神": deathBaseReason = "元素力枯竭，神之眼黯淡，生命力流逝"; break;
+            case "崩坏": deathBaseReason = "星轨能量耗尽，命途之力衰退，躯壳崩解"; break;
+            case "无职转生": deathBaseReason = "魔力回路枯竭，无法维持生命，自然老去"; break;
+            case "魔法": deathBaseReason = "魔法核心耗尽，巫师之力衰退，寿终正寝"; break;
+            case "斗罗": deathBaseReason = "武魂枯萎，魂环消散，魂力耗尽而亡"; break;
+            case "鬼灭": deathBaseReason = "呼吸法无法维持，身体机能衰退，寿数已尽"; break;
+            default: deathBaseReason = "年迈体衰，多器官功能衰竭，久病不治";
+        }
+    }
+    if(game.attr.phys < 10){
+        deathRate = 0.4;
+        switch(worldType){
+            case "修仙": deathBaseReason = "经脉尽断，灵力反噬，肉身崩解"; break;
+            case "末世": deathBaseReason = "被变异生物重伤，无医疗资源救治"; break;
+            case "赛博": deathBaseReason = "核心义体模块短路，脑机接口烧毁"; break;
+            case "古风": deathBaseReason = "油尽灯枯，回天乏术，溘然长逝"; break;
+            case "原神": deathBaseReason = "元素力暴走，神之眼炸裂，肉身被元素湮灭"; break;
+            case "崩坏": deathBaseReason = "星核之力反噬，命途崩塌，星际能量撕裂躯体"; break;
+            case "无职转生": deathBaseReason = "魔法暴走，魔力回路断裂，全身被魔法能量撕碎"; break;
+            case "魔法": deathBaseReason = "黑魔法反噬，灵魂被摄魂怪吸走，肉身消亡"; break;
+            case "斗罗": deathBaseReason = "魂环暴动，武魂自爆，魂力冲碎经脉而亡"; break;
+            case "鬼灭": deathBaseReason = "呼吸法错乱，肺部炸裂，无法维持生命体征"; break;
+            default: deathBaseReason = "身体彻底崩溃，多器官衰竭，意外离世";
+        }
+    }
+    // 自然死亡执行
+    if(deathRate > 0 && Math.random() < deathRate){
+        game.deathReason = deathBaseReason + (game.age > 80 ? "（享年"+game.age+"岁）" : "");
+        stopAuto(); await endGame(); return;
+    }
+
+    // 事件触发
+    const hasEvent = Math.random() < 0.35;
+
+    if(hasEvent){
+        stopAuto();
+        game.lastEvent = game.age;
+        $("eventTypeTip").innerText = "本年度：触发关键事件";
+        $("eventPanel").classList.remove("hide");
+        $("loadingTip").classList.remove("hide");
+        $("eventContent").classList.add("hide");
+        
+        await genEvent();
+        
+        $("loadingTip").classList.add("hide");
+        $("eventContent").classList.remove("hide");
+    }else{
+        $("eventTypeTip").innerText = "本年度：日常成长";
+        const stage = getAgeStage(game.age);
+        const story = await ai(`
+你是一名精通不同世界观设定的人生传记作家，严格遵循以下规则生成内容：
+1. 内容必须100%贴合选定的世界观，融入该世界的核心设定（如修仙世界的灵力、末世的拾荒、赛博朋克的义体、原神的元素力、崩坏星穹铁道的命途、无职转生的魔法）；
+2. 剧情需与角色过往经历连贯，符合年龄阶段特征，无逻辑跳跃；
+3. 语言风格匹配世界观（古风用文言化表达、赛博朋克带科技感、修仙带仙侠感、原神带提瓦特风格、崩坏带星际冒险感）；
+4. 仅输出1-2句话的年度日常经历，无额外说明。
+
+【基础信息】
+世界：${game.world}（核心特征：${game.world.includes("修仙")?"灵力、修为、寿元、宗门；":game.world.includes("末世")?"辐射、变异、拾荒、生存；":game.world.includes("赛博朋克")?"义体、脑机接口、霓虹、企业垄断；":game.world.includes("古风")?"科举、江湖、皇权、诗词；":game.world.includes("原神")?"元素力、神之眼、七国、魔物；":game.world.includes("崩坏")?"星轨、命途、星神、星际冒险；":game.world.includes("无职转生")?"魔法、魔族、冒险者公会、转生；":game.world.includes("哈利波特")?"魔咒、霍格沃茨、魂器、魁地奇；":game.world.includes("斗罗大陆")?"武魂、魂环、魂骨、封号斗罗；":game.world.includes("鬼灭之刃")?"呼吸法、鬼杀队、十二鬼月、紫藤花；":"职场、社交、科技、日常；"}）
+种族：${game.race}（种族特征：${game.race.includes("精灵")?"长寿、擅长魔法；":game.race.includes("血族")?"怕阳光、以血为食；":game.race.includes("机械")?"无肉身、依赖能源；":"普通人类特征；"}）
+出身：${game.born}
+年龄：${game.age}（${stage}）
+性格：${game.charDesc}
+属性：财富${game.attr.wealth} 人脉${game.attr.social} 资源${game.attr.res} 体质${game.attr.phys} 心智${game.attr.mind}
+最近经历：${game.history.slice(-3).map(h=>h.age+"岁："+h.text).join(' | ')}
+        `);
+        // 小幅属性波动（贴合世界观）
+        const delta = {
+            wealth: Math.floor(Math.random()*3)-1,
+            social: Math.floor(Math.random()*3)-1,
+            res: Math.floor(Math.random()*3)-1,
+            phys: Math.floor(Math.random()*3)-1,
+            mind: Math.floor(Math.random()*3)-1
+        };
+        // 新增：IP世界观属性波动修正
+        if(game.world.includes("原神")){
+            delta.mind = delta.mind + (Math.random()>0.7 ? 1 : 0); // 原神心智略涨（元素领悟）
+            delta.phys = delta.phys + (Math.random()>0.6 ? 1 : 0); // 原神体质略涨（冒险）
+        }
+        if(game.world.includes("崩坏")){
+            delta.res = delta.res + (Math.random()>0.7 ? 1 : 0); // 崩坏资源略涨（星轨物资）
+            delta.mind = delta.mind + (Math.random()>0.6 ? 1 : 0); // 崩坏心智略涨（星神领悟）
+        }
+        if(game.world.includes("无职转生")){
+            delta.mind = delta.mind + (Math.random()>0.7 ? 1 : 0); // 无职转生心智略涨（魔法学习）
+            delta.res = delta.res + (Math.random()>0.6 ? 1 : 0); // 无职转生资源略涨（冒险物资）
+        }
+        if(game.world.includes("哈利波特")){
+            delta.mind = delta.mind + (Math.random()>0.7 ? 1 : 0); // 哈利波特心智略涨（魔法学习）
+            delta.social = delta.social + (Math.random()>0.6 ? 1 : 0); // 哈利波特人脉略涨（学院社交）
+        }
+        if(game.world.includes("斗罗大陆")){
+            delta.phys = delta.phys + (Math.random()>0.7 ? 1 : 0); // 斗罗体质略涨（武魂修炼）
+            delta.res = delta.res + (Math.random()>0.6 ? 1 : 0); // 斗罗资源略涨（魂环/魂骨）
+        }
+        if(game.world.includes("鬼灭之刃")){
+            delta.phys = delta.phys + (Math.random()>0.7 ? 1 : 0); // 鬼灭体质略涨（呼吸法）
+            delta.social = delta.social + (Math.random()>0.6 ? 1 : 0); // 鬼灭人脉略涨（鬼杀队）
+        }
+        // 应用属性波动
+        game.attr.wealth = Math.max(1,Math.min(100,game.attr.wealth + delta.wealth));
+        game.attr.social = Math.max(1,Math.min(100,game.attr.social + delta.social));
+        game.attr.res = Math.max(1,Math.min(100,game.attr.res + delta.res));
+        game.attr.phys = Math.max(1,Math.min(100,game.attr.phys + delta.phys));
+        game.attr.mind = Math.max(1,Math.min(100,game.attr.mind + delta.mind));
+        refreshUI();
+        addLog(game.age, story);
+    }
+}
+
+// 生成事件（严格贴合年龄 + 连贯 + 世界观）
+async function genEvent(){
+    const stage = getAgeStage(game.age);
+    const event = await ai(`
+你是一名资深的跨世界观剧情作家，需严格遵循以下规则创作关键事件：
+1. 世界观适配：深度融入${game.world}的核心设定（如原神的元素力/神之眼、崩坏星穹铁道的命途/星核、无职转生的魔法/魔族、哈利波特的魔咒/霍格沃茨、斗罗大陆的武魂/魂环、鬼灭之刃的呼吸法/鬼杀队）；
+2. 年龄贴合：事件必须符合${game.age}岁（${stage}）的行为逻辑，禁止出现年龄不符的内容；
+3. 剧情连贯：与角色过往经历（${game.history.slice(-3).map(h=>h.age+"岁："+h.text).join(' | ')}）强关联，无逻辑断裂；
+4. 种族适配：结合${game.race}的种族特征设计冲突/机遇；
+5. 内容要求：事件需有明确的冲突点/机遇点，1-3句话，语言风格匹配世界观。
+
+仅输出事件内容，无额外说明。
+    `);
+    game.currentEvent = event;
+    $("eventText").innerText = event;
+
+    const opts = (await ai(`
+基于以下信息生成3个行动选项，严格遵循规则：
+1. 世界观适配：选项需符合${game.world}的设定（如原神选"前往蒙德城学习风元素操控"/"挑战风魔龙秘境"，崩坏选"开拓新的星轨"/"投靠星核猎手"，无职转生选"学习火魔法"/"加入冒险者公会"）；
+2. 年龄适配：符合${game.age}岁（${stage}）的行为能力；
+3. 逻辑自洽：每个选项对应事件的不同解决方向，无无意义选项；
+4. 格式要求：每行一个选项，不加序号，语言风格匹配世界观。
+
+【基础信息】
+事件：${event}
+年龄：${game.age}（${stage}）
+种族：${game.race}
+世界观：${game.world}
+    `)).split("\n").map(x=>x.trim()).filter(x=>x.length>3);
+    $("optionList").innerHTML = "";
+
+    opts.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = opt;
+        btn.onclick = () => {
+            document.querySelectorAll(".option-btn").forEach(b=>b.classList.remove("active"));
+            btn.classList.add("active");
+            game.selected = opt;
+            $("customAction").value = "";
+        };
+        $("optionList").appendChild(btn);
+    });
+}
+
+// 确定选择
+$("confirmBtn").onclick = async () => {
+    const customText = $("customAction").value.trim();
+    if(customText){
+        game.selected = "自定义行动：" + customText;
+    }
+    if(!game.selected){
+        alert("请选择一个选项 或 填写自定义行动！");
+        return;
+    }
+
+    const stage = getAgeStage(game.age);
+    const res = await ai(`
+你是一名精通跨世界观叙事的作家，需严格遵循以下规则创作事件结果：
+1. 世界观深度适配：融入${game.world}的核心设定（如原神的元素力/神之眼/七国、崩坏星穹铁道的命途/星核/星轨、无职转生的魔法/魔族/冒险者公会、哈利波特的魔咒/霍格沃茨/魂器、斗罗大陆的武魂/魂环/魂骨、鬼灭之刃的呼吸法/鬼杀队/十二鬼月），语言风格匹配；
+2. 剧情连贯：与事件、选择、角色过往经历强关联，逻辑闭环；
+3. 年龄贴合：符合${game.age}岁（${stage}）的行为结果；
+4. 种族适配：结合${game.race}的特征设计结果；
+5. 死因丰富性：若角色死亡，死因需详细且贴合世界观（如原神："试图操控岩元素挑战若陀龙王，被岩脊贯穿躯体，元素力彻底消散而亡"；崩坏："开拓未知星轨时遭遇星核猎手，命途之力被封印，星际真空撕裂躯体而亡"；无职转生："与魔族战斗时魔法耗尽，被魔族的暗魔法击穿魔力回路而亡"）；
+6. 属性变化：最后明确标注属性变化（财富±x 人脉±x 资源±x 体质±x 心智±x），数值合理；
+7. 死亡标注：若死亡，在属性变化后加【死因：详细的死亡原因，含世界观特征】。
+
+【基础信息】
+事件：${game.currentEvent}
+选择：${game.selected}
+年龄：${game.age}（${stage}）
+种族：${game.race}
+世界观：${game.world}
+属性：财富${game.attr.wealth} 人脉${game.attr.social} 资源${game.attr.res} 体质${game.attr.phys} 心智${game.attr.mind}
+最近经历：${game.history.slice(-3).map(h=>h.age+"岁："+h.text).join(' | ')}
+
+输出要求：结果生动有剧情，2-4句话，属性变化和死因标注格式严格。
+    `);
+    game.result = res;
+
+    const deathMatch = res.match(/死因[:：](.+)/);
+    if(deathMatch){
+        game.deathReason = deathMatch[1].trim();
+        game.isDead = true;
+    }
+
+    applyAttr(res);
+    refreshUI();
+    addLog(game.age, `事件：${game.currentEvent}<br>选择：${game.selected}<br>结果：${game.result}`);
+    
+    game.currentEvent = game.selected = game.result = "";
+    $("customAction").value = "";
+    $("eventPanel").classList.add("hide");
+
+    if(game.isDead){
+        stopAuto();
+        await endGame();
+        return;
+    }
+    startAutoNext();
+};
+
+// 属性计算
+function applyAttr(text){
+    const get = (k) => {
+        const m = text.match(new RegExp(k+"\\s*([+-]\\d+)","i"));
+        return m?parseInt(m[1]):0;
+    };
+    game.attr.wealth = Math.max(1,Math.min(100,game.attr.wealth + get("财富")));
+    game.attr.social = Math.max(1,Math.min(100,game.attr.social + get("人脉")));
+    game.attr.res    = Math.max(1,Math.min(100,game.attr.res    + get("资源")));
+    game.attr.phys   = Math.max(1,Math.min(100,game.attr.phys   + get("体质")));
+    game.attr.mind   = Math.max(1,Math.min(100,game.attr.mind   + get("心智")));
+}
+
+// 履历
+function addLog(age, text){
+    game.history.push({age,text});
+    const div = document.createElement("div");
+    div.className = "year-item";
+    div.innerHTML = `<strong>${age}岁</strong><br>${text}`;
+    $("timeline").prepend(div);
+}
+
+// 结局（丰富化）
+async function endGame(){
+    game.isDead = true;
+    stopAuto();
+    
+    const summary = await ai(`
+你是一名顶级的人生传记作家，需为角色撰写人生总结，严格遵循规则：
+1. 世界观深度适配：融入${game.world}的核心设定，语言风格匹配（如原神用提瓦特文风、崩坏用星际冒险文风、无职转生用剑与魔法文风）；
+2. 剧情连贯：串联角色一生的关键经历，无逻辑断裂；
+3. 死因丰富化：详细描述死亡过程，结合世界观和种族特征；
+4. 文采要求：语言流畅有史诗感，结构完整（早年-中年-晚年-结局）；
+5. 格式要求：仅输出总结内容，无额外说明，段落清晰。
+
+【基础信息】
+世界：${game.world} 
+种族：${game.race} 
+出身：${game.born}
+天赋：${game.talents.join('，')}
+享年：${game.age}岁
+死因：${game.deathReason || "自然老去"}
+经历：${game.history.map(h=>h.age+"岁："+h.text).join(' | ')}
+    `);
+
+    $("endContent").innerText = `你享年 ${game.age} 岁\n【死因】：${game.deathReason || "自然终老"}\n\n【人生总结】\n${summary}`;
+    $("gamePanel").classList.add("hide");
+    $("endPanel").classList.remove("hide");
+}
+
+// 刷新UI
+function refreshUI(){
+    $("valWealth").innerText = game.attr.wealth;
+    $("valSocial").innerText = game.attr.social;
+    $("valRes").innerText = game.attr.res;
+    $("valPhys").innerText = game.attr.phys;
+    $("valMind").innerText = game.attr.mind;
+}
+
+// 重置
+function reset(){
+    stopAuto();
+    $("startPanel").classList.remove("hide");
+    $("gamePanel").classList.add("hide");
+    $("endPanel").classList.add("hide");
+    $("timeline").innerHTML = "";
+    genTalents(); // 重置时重新生成天赋
+    game = {
+        age:0,world:"",race:"",born:"",charDesc:"",talents:[],
+        attr:{wealth:30,social:30,res:30,phys:30,mind:30},
+        history:[],isDead:false,lastEvent:0,currentEvent:"",selected:"",result:"",deathReason:""
+    };
+}
+$("restartBtn").onclick = reset;
+$("endRestartBtn").onclick = reset;
+
+// 存档
+$("saveBtn").onclick = ()=>{localStorage.setItem(SAVE_KEY,JSON.stringify(game));alert("✅ 存档成功");}
+$("loadSaveBtn").onclick = ()=>{
+    const s = localStorage.getItem(SAVE_KEY);
+    if(!s)return alert("无存档");
+    stopAuto();
+    game = JSON.parse(s);
+    refreshUI();
+    $("nowAge").innerText = game.age;
+    $("timeline").innerHTML = "";
+    game.history.forEach(h=>addLog(h.age,h.text));
+    $("startPanel").classList.add("hide"); $("gamePanel").classList.remove("hide");
+    startAutoNext();
+}
+$("delSaveBtn").onclick = ()=>{localStorage.removeItem(SAVE_KEY);alert("🗑️ 存档已删除");}
+</script>
+</body>
+</html>
