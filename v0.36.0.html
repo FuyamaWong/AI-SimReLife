@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI分支人生模拟器｜终极完整版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: #121330;
+            color: #fff;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .api-bar {
+            background: #1a1b33;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .api-bar input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: none;
+            background: #252744;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .api-bar button {
+            padding: 10px 16px;
+            background: #cc9933;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffdd77;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 14px;
+            color: #ffdd77;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: #1b1c3a;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 18px;
+            border: 1px solid #333555;
+        }
+
+        .form-item {
+            margin-bottom: 18px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        select, textarea, input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #252744;
+            border: 1px solid #444566;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .attr-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .attr-item {
+            text-align: center;
+            background: #252744;
+            padding: 10px 6px;
+            border-radius: 8px;
+        }
+
+        .attr-item label {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .attr-item input {
+            width: 100%;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .talent-box {
+            background: #252744;
+            padding: 12px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .btn:disabled {
+            background: #444 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-gold {
+            background: #cc9933;
+        }
+
+        .btn-red {
+            background: #a83333;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .status-card {
+            background: #252744;
+            padding: 14px 8px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: #66ccff;
+            margin-top: 6px;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 14px;
+            margin: 8px 0;
+            background: #252744;
+            border: 1px solid #444566;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-btn.active {
+            background: #cc9933;
+            border-color: #ffdd77;
+            color: #fff;
+        }
+
+        .timeline {
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .year-item {
+            background: #252744;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #cc9933;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        .tip {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .custom-input {
+            margin-top: 12px;
+        }
+
+        .loading {
+            color: #ffdd77;
+            font-size: 15px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .world-event-bar {
+            background: #252744;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .world-event-bar span {
+            color: #ffdd77;
+        }
+
+        .profession-bar {
+            background: #252744;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #ffdd77;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="api-bar">
+        <span>🔑 DeepSeek API密钥：</span>
+        <input type="text" id="userApiKey" placeholder="粘贴DeepSeek API密钥" value="">
+        <button onclick="saveApi()">保存</button>
+    </div>
+
+    <h1>🌍 AI分支人生模拟器</h1>
+
+    <!-- 开局面板 -->
+    <div class="card" id="startPanel">
+        <h2>📜 创建角色</h2>
+
+        <div class="form-item">
+            <label>🌐 世界观（超丰富）</label>
+            <select id="worldSel">
+                <option value="现代现实都市">现代现实都市</option>
+                <option value="现代职场精英">现代职场精英</option>
+                <option value="现代娱乐圈">现代娱乐圈</option>
+                <option value="现代校园青春">现代校园青春</option>
+                <option value="古风古代王朝">古风古代王朝</option>
+                <option value="古风江湖武林">古风江湖武林</option>
+                <option value="古风宫廷权谋">古风宫廷权谋</option>
+                <option value="古风修仙大陆">古风修仙大陆</option>
+                <option value="末世废土求生">末世废土求生</option>
+                <option value="末世异能觉醒">末世异能觉醒</option>
+                <option value="星际科幻联邦">星际科幻联邦</option>
+                <option value="星际机甲战争">星际机甲战争</option>
+                <option value="玄幻修仙飞升">玄幻修仙飞升</option>
+                <option value="玄幻魔法大陆">玄幻魔法大陆</option>
+                <option value="中世纪骑士王国">中世纪骑士王国</option>
+                <option value="高魔奇幻世界">高魔奇幻世界</option>
+                <option value="赛博朋克都市">赛博朋克都市</option>
+                <option value="蒸汽机械时代">蒸汽机械时代</option>
+                <option value="灵气复苏现代">灵气复苏现代</option>
+                <option value="洪荒上古时代">洪荒上古时代</option>
+                <option value="鬼怪灵异世界">鬼怪灵异世界</option>
+                <option value="克苏鲁诡秘世界">克苏鲁诡秘世界</option>
+                <option value="武侠江湖世界">武侠江湖世界</option>
+                <option value="仙侠道魔纷争">仙侠道魔纷争</option>
+                <option value="古代经商致富">古代经商致富</option>
+                <option value="custom">自定义世界观</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="worldCustomWrap">
+            <textarea id="worldCustom" placeholder="描述世界规则、势力、力量体系、核心设定"></textarea>
+        </div>
+
+        <div class="form-item">
+            <label>🧬 种族</label>
+            <select id="raceSel">
+                <option value="普通人类">普通人类</option>
+                <option value="高等精灵">高等精灵</option>
+                <option value="山地矮人">山地矮人</option>
+                <option value="暗夜血族">暗夜血族</option>
+                <option value="兽人战士">兽人战士</option>
+                <option value="修仙灵体">修仙灵体</option>
+                <option value="龙族后裔">龙族后裔</option>
+                <option value="九尾天狐">九尾天狐</option>
+                <option value="天使神族">天使神族</option>
+                <option value="深渊恶魔">深渊恶魔</option>
+                <option value="亡灵巫妖">亡灵巫妖</option>
+                <option value="鲛人海族">鲛人海族</option>
+                <option value="custom">自定义种族</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="raceCustomWrap">
+            <input type="text" id="raceCustom" placeholder="种族特长、特征">
+        </div>
+
+        <div class="form-item">
+            <label>🎓 出身背景（大幅扩充）</label>
+            <select id="bornSel">
+                <option value="寒门平民">寒门平民</option>
+                <option value="市井小贩">市井小贩</option>
+                <option value="乡村农夫">乡村农夫</option>
+                <option value="流浪孤儿">流浪孤儿</option>
+                <option value="书香门第">书香门第</option>
+                <option value="医者世家">医者世家</option>
+                <option value="工匠世家">工匠世家</option>
+                <option value="商贾之家">商贾之家</option>
+                <option value="钱庄少爷">钱庄少爷</option>
+                <option value="武将世家">武将世家</option>
+                <option value="文官世家">文官世家</option>
+                <option value="贵族子嗣">贵族子嗣</option>
+                <option value="皇室宗亲">皇室宗亲</option>
+                <option value="宗门弟子">宗门弟子</option>
+                <option value="魔道传人">魔道传人</option>
+                <option value="江湖游侠">江湖游侠</option>
+                <option value="青楼艺伎">青楼艺伎</option>
+                <option value="山寨匪首">山寨匪首</option>
+                <option value="宫廷太监">宫廷太监</option>
+                <option value="宫女侍女">宫女侍女</option>
+                <option value="太子皇子">太子皇子</option>
+                <option value="公主郡主">公主郡主</option>
+                <option value="部落勇士">部落勇士</option>
+                <option value="海盗船长">海盗船长</option>
+                <option value="逃犯囚徒">逃犯囚徒</option>
+                <option value="天选圣子">天选圣子</option>
+                <option value="魔族少主">魔族少主</option>
+                <option value="custom">自定义出身</option>
+            </select>
+        </div>
+        <div class="form-item hide" id="bornCustomWrap">
+            <textarea id="bornCustom" placeholder="家庭、童年、成长环境"></textarea>
+        </div>
+
+        <div class="form-item">
+            <label>📝 人物描述</label>
+            <textarea id="charDesc" placeholder="性格、执念、梦想、秘密、弱点"></textarea>
+        </div>
+
+        <!-- 起始年龄 -->
+        <div class="form-item">
+            <label>🎂 起始年龄</label>
+            <input type="number" id="startAge" value="0" min="0" max="100">
+        </div>
+
+        <!-- 自定义职业（默认隐藏） -->
+        <div class="form-item hide" id="customProfessionWrap">
+            <label>🛠️ 自定义职业（留空自动匹配）</label>
+            <input type="text" id="customProfession" placeholder="如：流浪剑客、星际商人">
+        </div>
+
+        <div class="form-item">
+            <label>📊 初始属性</label>
+            <div class="attr-grid">
+                <div class="attr-item"><label>财富</label><input type="number" id="initWealth" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>人脉</label><input type="number" id="initSocial" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>资源</label><input type="number" id="initRes" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>体质</label><input type="number" id="initPhys" value="30" min="1" max="100"></div>
+                <div class="attr-item"><label>心智</label><input type="number" id="initMind" value="30" min="1" max="100"></div>
+            </div>
+        </div>
+
+        <div class="form-item">
+            <label>✨ 先天天赋</label>
+            <div class="talent-box" id="talentList">生成中...</div>
+        </div>
+
+        <button class="btn btn-gold" id="startBtn">🚀 开启人生</button>
+        <div class="btn-row">
+            <button style="background:#cc9933;" id="loadSaveBtn">📂 读取存档</button>
+            <button style="background:#a83333;" id="delSaveBtn">🗑️ 删除存档</button>
+        </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="gamePanel" class="hide">
+        <div class="card">
+            <div class="btn-row">
+                <button style="background:#cc9933" id="saveBtn">💾 保存</button>
+                <button style="background:#a83333" id="restartBtn">🔄 重新开局</button>
+            </div>
+            <h2>📊 年龄：<span id="nowAge">0</span> 岁</h2>
+            <div class="profession-bar">
+                🛠️ 当前职业：<span id="professionText">未定</span>
+            </div>
+            <div class="world-event-bar">
+                🌍 世界动向：<span id="worldEventText">---</span>
+            </div>
+            <div class="status-row">
+                <div class="status-card"><div>💰财富</div><div class="status-val" id="valWealth">30</div></div>
+                <div class="status-card"><div>🤝人脉</div><div class="status-val" id="valSocial">30</div></div>
+                <div class="status-card"><div>📦资源</div><div class="status-val" id="valRes">30</div></div>
+                <div class="status-card"><div>💪体质</div><div class="status-val" id="valPhys">30</div></div>
+                <div class="status-card"><div>🧠心智</div><div class="status-val" id="valMind">30</div></div>
+            </div>
+            <div style="margin-top:10px; color:#ffdd77;" id="eventTypeTip">本年度：成长阶段</div>
+        </div>
+
+        <div class="card hide" id="eventPanel">
+            <div id="loadingTip" class="loading">⏳ 事件生成中，请稍候...</div>
+            <div id="eventContent" class="hide">
+                <h3>📜 年度事件</h3>
+                <div id="eventText" style="margin:10px 0; line-height:1.6;"></div>
+                <div id="optionList"></div>
+                <div class="custom-input">
+                    <input type="text" id="customAction" placeholder="✍️ 自定义行动">
+                </div>
+                <button class="btn btn-gold" id="confirmBtn" style="margin-top:16px;">✅ 确定选择</button>
+                <div class="tip">💡 选择后将影响未来几年的人生轨迹</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📖 人生履历（完整记录）</h3>
+            <div class="timeline" id="timeline"></div>
+        </div>
+    </div>
+
+    <!-- 结局 -->
+    <div class="card hide" id="endPanel">
+        <h2>⚰️ 一生落幕</h2>
+        <div id="endContent" style="line-height:1.8; margin:16px 0; white-space: pre-line;"></div>
+        <button class="btn btn-gold" id="endRestartBtn">🔄 重新开始</button>
+    </div>
+
+</div>
+
+<script>
+// ==================== 核心配置 ====================
+let API_KEY = localStorage.getItem("deepseekKey") || "";
+const ENDPOINT = "https://api.deepseek.com/chat/completions";
+const MODEL = "deepseek-chat";
+const SAVE_KEY = "lifeSim";
+
+let game = {
+    age:0, world:"", race:"", born:"", charDesc:"", talents:[],
+    attr:{wealth:30, social:30, res:30, phys:30, mind:30},
+    history:[], isDead:false,
+    impact: "", lastImpactAge: 0,
+    selected: "", eventAttr: "", eventImpact: "", deathReason: "",
+    worldEvent: "",
+    profession: ""
+};
+
+const worldPresetDesc = {
+    "现代现实都市":"普通现代都市，无超自然，日常工作学习社交。",
+    "现代职场精英":"现代高压职场，竞争晋升，商业博弈。",
+    "现代娱乐圈":"现代娱乐圈，流量、绯闻、资源、资本博弈。",
+    "现代校园青春":"现代校园，学习、友情、恋爱、成长烦恼。",
+    "古风古代王朝":"古代封建皇权社会，科举、官场、民生、阶层分明。",
+    "古风江湖武林":"古代江湖，门派纷争，武功秘籍，快意恩仇。",
+    "古风宫廷权谋":"古代皇宫，皇子争位，后宫争斗，权谋算计。",
+    "古风修仙大陆":"古代低魔修仙，炼气、筑基、灵根、丹药。",
+    "末世废土求生":"核战后废土，资源匮乏，变异生物，残酷生存。",
+    "末世异能觉醒":"末世降临，人类觉醒异能，对抗丧尸与怪物。",
+    "星际科幻联邦":"星际文明，高科技，星际联邦，外星殖民。",
+    "星际机甲战争":"星际时代，机甲战士，星际战争，星系争霸。",
+    "玄幻修仙飞升":"高武修仙，炼气、筑基金丹、元婴、渡劫飞升。",
+    "玄幻魔法大陆":"魔法与斗气，魔法师、战士、魔兽、秘境探险。",
+    "中世纪骑士王国":"骑士、贵族、教会、城堡、冷兵器战争。",
+    "高魔奇幻世界":"魔法发达，精灵矮人兽人，巨龙与神魔。",
+    "赛博朋克都市":"高科技低生活，义体改造，巨型企业垄断。",
+    "蒸汽机械时代":"蒸汽动力，工业革命，机械发明，朋克机械。",
+    "灵气复苏现代":"现代世界灵气复苏，人类觉醒异能，异兽入侵。",
+    "洪荒上古时代":"盘古开天，巫妖大战，龙凤麒麟，圣人博弈。",
+    "鬼怪灵异世界":"阴阳两界，鬼怪精魅，道士驱魔，灵异事件。",
+    "克苏鲁诡秘世界":"诡异神秘，不可名状，疯狂与隐秘。",
+    "武侠江湖世界":"传统武侠，内功轻功，江湖门派，侠义情仇。",
+    "仙侠道魔纷争":"仙侠世界，正道魔道纷争，仙魔大战。",
+    "古代经商致富":"古代商业社会，开店经商，跑商致富，商会争霸。"
+};
+
+let autoTimer = null;
+const $ = id => document.getElementById(id);
+
+// ================== 属性等级成语映射 ==================
+function getAttrLevel(attrName, value) {
+    const levels = {
+        wealth: ["家徒四壁","勉强温饱","小康之家","家境殷实","富可敌国"],
+        social: ["形单影只","门可罗雀","左右逢源","誉满天下","一呼百应"],
+        res:    ["一无所有","捉襟见肘","小有积蓄","粮草充足","应有尽有"],
+        phys:   ["弱不禁风","体魄欠佳","身强体健","铜皮铁骨","钢筋铁骨"],
+        mind:   ["心浮气躁","反应迟钝","思维清晰","足智多谋","算无遗策"]
+    };
+    const arr = levels[attrName] || ["极低","较低","中等","较高","极高"];
+    let index = 0;
+    if (value <= 20) index = 0;
+    else if (value <= 40) index = 1;
+    else if (value <= 60) index = 2;
+    else if (value <= 80) index = 3;
+    else index = 4;
+    return arr[index];
+}
+
+function getAttrSummary() {
+    const a = game.attr;
+    return `财富：${getAttrLevel('wealth', a.wealth)}，人脉：${getAttrLevel('social', a.social)}，资源：${getAttrLevel('res', a.res)}，体质：${getAttrLevel('phys', a.phys)}，心智：${getAttrLevel('mind', a.mind)}`;
+}
+
+// 初始化
+window.addEventListener('DOMContentLoaded', function() {
+    genTalents();
+    $("userApiKey").value = API_KEY;
+    
+    $("startBtn").addEventListener('click', startGame);
+    $("confirmBtn").addEventListener('click', confirmChoice);
+    $("endRestartBtn").addEventListener('click', restartGame);
+    
+    $("saveBtn").addEventListener('click', saveGame);
+    $("loadSaveBtn").addEventListener('click', loadGame);
+    $("delSaveBtn").addEventListener('click', deleteSave);
+    $("restartBtn").addEventListener('click', restartGame);
+    
+    bindCustomSelect();
+    
+    const startAgeEl = $("startAge");
+    if (startAgeEl) {
+        startAgeEl.addEventListener('input', toggleCustomProfession);
+        toggleCustomProfession();
+    }
+});
+
+function saveApi() {
+    const v = $("userApiKey").value.trim();
+    if (!v) return alert("请输入密钥");
+    API_KEY = v;
+    localStorage.setItem("deepseekKey", v);
+    alert("✅ 密钥保存成功");
+}
+
+function toggleCustomProfession() {
+    const age = parseInt($("startAge")?.value || 0);
+    const wrap = $("customProfessionWrap");
+    if (wrap) {
+        if (age >= 16) {
+            wrap.classList.remove("hide");
+        } else {
+            wrap.classList.add("hide");
+            if ($("customProfession")) $("customProfession").value = "";
+        }
+    }
+}
+
+function bindCustomSelect() {
+    ["worldSel","raceSel","bornSel"].forEach(id => {
+        const el = $(id);
+        if (el) {
+            el.onchange = function(){
+                const wrapId = this.id.replace("Sel","CustomWrap");
+                const wrapEl = $(wrapId);
+                if (wrapEl) {
+                    wrapEl.className = this.value==="custom"?"form-item":"form-item hide";
+                    if(id === "worldSel" && this.value !== "custom" && worldPresetDesc[this.value]){
+                        $("worldCustom").value = worldPresetDesc[this.value];
+                    }
+                }
+            }
+        }
+    });
+}
+
+function genTalents() {
+    const talentListEl = $("talentList");
+    if (!talentListEl) return;
+    
+    const pool = [
+        "天命之子：全属性+8，逢凶化吉","万古天骄：机缘翻倍","不死仙体：不易猝死",
+        "聚宝仙盆：财富每年+3","无上人脉：人脉不低于60","气运滔天：事件偏向利好",
+        "力贯千钧：体质+15","绝顶聪慧：心智+15","天生富贵：财富+15","人缘极佳：人脉+15",
+        "大器晚成：前弱后强","早年英才：年轻强势","寒门韧性：穷但耐活",
+        "魅惑众生：魅力极高","金刚不坏：体质极强","过目不忘：学习极快"
+    ];
+    
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 3);
+    game.talents = selected;
+    
+    talentListEl.innerHTML = selected.map(x=>`<div>• ${x}</div>`).join("");
+}
+
+async function ai(prompt){
+    if (!API_KEY) {
+        alert("请先配置DeepSeek API密钥！");
+        return "缺少API密钥";
+    }
+    try {
+        const res = await fetch(ENDPOINT, {
+            method:"POST",
+            headers:{
+                Authorization:"Bearer "+API_KEY,
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                model:MODEL,
+                messages:[{role:"user",content:prompt}],
+                temperature:0.75
+            })
+        });
+        
+        if (!res.ok) throw new Error(`API请求失败：${res.status}`);
+        const json = await res.json();
+        return json.choices?.[0]?.message?.content || "生成失败";
+    } catch(e) {
+        console.error("AI错误：", e);
+        alert(`AI请求出错：${e.message}`);
+        return "生成失败";
+    }
+}
+
+function refreshUI() {
+    if (!$("valWealth") || !$("nowAge")) return;
+    
+    $("valWealth").innerText = game.attr.wealth;
+    $("valSocial").innerText = game.attr.social;
+    $("valRes").innerText = game.attr.res;
+    $("valPhys").innerText = game.attr.phys;
+    $("valMind").innerText = game.attr.mind;
+    $("nowAge").innerText = game.age;
+    $("eventTypeTip").innerText = `本年度：${getAgeStage(game.age)}`;
+
+    const worldSpan = $("worldEventText");
+    if (worldSpan) worldSpan.innerText = game.worldEvent || '暂无大事';
+
+    const profSpan = $("professionText");
+    if (profSpan) profSpan.innerText = game.profession || '未定';
+
+    const tl = $("timeline");
+    if (tl) {
+        tl.innerHTML = "";
+        game.history.slice().reverse().forEach(item => {
+            const div = document.createElement("div");
+            div.className = "year-item";
+            let html = `<strong>${item.age}岁</strong>：${item.text}`;
+            if (item.choice) html += `<br>🔹选择：${item.choice}`;
+            if (item.result) html += `<br>✅结果：${item.result}`;
+            if (item.attr) html += `<br><span style="color:#66ccff">${item.attr}</span>`;
+            div.innerHTML = html;
+            tl.appendChild(div);
+        });
+    }
+}
+
+function getAgeStage(age){
+    if(age<=3)return"婴儿期";
+    if(age<=12)return"童年期";
+    if(age<=19)return"少年期";
+    if(age<=29)return"青年期";
+    if(age<=49)return"中年期";
+    if(age<=69)return"中老年期";
+    return"晚年期";
+}
+
+function parseAttrChange(text) {
+    const map = {"财富":"wealth","人脉":"social","资源":"res","体质":"phys","心智":"mind"};
+    const out = {wealth:0,social:0,res:0,phys:0,mind:0};
+    const reg = /(财富|人脉|资源|体质|心智)([+-]\d+)/g;
+    let m; 
+    while((m=reg.exec(text))) {
+        if (map[m[1]]) out[map[m[1]]] += parseInt(m[2]) || 0;
+    }
+    return out;
+}
+
+// ================== 世界动态演化（概率触发） ==================
+async function updateWorldEvent() {
+    if (game.age === 0) return;
+    if (Math.random() > 0.4) return;
+    
+    const recentWorld = game.worldEvent ? `当前世界背景：${game.worldEvent}（请生成与之前不同的事件类型）` : '世界初始状态';
+    const stage = getAgeStage(game.age);
+    
+    const prompt = `
+你是世界观演化引擎。根据以下设定，用一句话（不超过12个汉字）描述当前世界正在发生的一件宏观大事，要求事件类型随机多样，避免重复（如气候变化、战争、科技突破、神明复苏、天灾、贸易禁运、文化潮流、神秘现象等）。
+世界观：${game.world}
+当前角色年龄：${game.age}岁（${stage}）
+${recentWorld}
+
+只输出句子，不加任何前缀。
+`;
+    
+    try {
+        const newEvent = await ai(prompt);
+        if (newEvent && newEvent.trim()) {
+            game.worldEvent = newEvent.trim();
+            const worldSpan = $("worldEventText");
+            if (worldSpan) worldSpan.innerText = game.worldEvent;
+        }
+    } catch (e) {
+        console.error("更新世界事件失败", e);
+    }
+}
+
+// ================== 职业动态更新 ==================
+async function updateProfession() {
+    const recent = game.history.slice(-5).map(h=>`${h.age}岁:${h.text}`).join('；') || '无';
+    const stage = getAgeStage(game.age);
+    
+    const prompt = `
+你是职业鉴定师，根据角色的当前状态判断最符合的职业。
+【世界观】${game.world}
+【种族】${game.race}
+【出身】${game.born}
+【性格】${game.charDesc}
+【天赋】${game.talents.join('、')}
+【年龄】${game.age}岁（${stage}）
+【当前属性】${getAttrSummary()}
+【近期经历】${recent}
+【世界背景】${game.worldEvent || '暂无大事'}
+【当前职业】${game.profession || '无'}
+
+请基于以上信息，给出一个最合理的职业名称（2-6个字），需符合世界观和角色状态。如无法判定，可回复“无固定职业”。只输出职业名称，不要任何额外内容。
+`;
+    try {
+        const res = await ai(prompt);
+        if (res && res.trim()) {
+            game.profession = res.trim().slice(0, 12);
+            const profSpan = $("professionText");
+            if (profSpan) profSpan.innerText = game.profession;
+        }
+    } catch (e) {
+        console.error("更新职业失败", e);
+    }
+}
+
+async function startGame() {
+    if(!API_KEY) return alert("请先保存API密钥！");
+    
+    game.world = $("worldSel").value === "custom" ? ($("worldCustom")?.value || "自定义") : (worldPresetDesc[$("worldSel").value] || $("worldSel").value);
+    game.race = $("raceSel").value === "custom" ? ($("raceCustom")?.value || "自定义") : $("raceSel").value;
+    game.born = $("bornSel").value === "custom" ? ($("bornCustom")?.value || "自定义") : $("bornSel").value;
+    game.charDesc = $("charDesc")?.value || "普通性格";
+    
+    game.attr = {
+        wealth: Math.max(1, Math.min(100, Number($("initWealth")?.value || 30))),
+        social: Math.max(1, Math.min(100, Number($("initSocial")?.value || 30))),
+        res: Math.max(1, Math.min(100, Number($("initRes")?.value || 30))),
+        phys: Math.max(1, Math.min(100, Number($("initPhys")?.value || 30))),
+        mind: Math.max(1, Math.min(100, Number($("initMind")?.value || 30)))
+    };
+    
+    game.age = Math.max(0, Math.min(100, parseInt($("startAge")?.value || 0) || 0));
+    game.history = [];
+    game.isDead = false;
+    game.impact = "";
+    game.lastImpactAge = 0;
+    game.worldEvent = "";
+    game.profession = "";
+
+    const startAge = game.age;
+    const customProf = $("customProfession")?.value?.trim();
+    
+    if (startAge >= 16 && customProf) {
+        game.profession = customProf;
+    } else {
+        await updateProfession().catch(e => console.error("初始职业生成失败", e));
+    }
+
+    $("startPanel").classList.add("hide");
+    $("gamePanel").classList.remove("hide");
+    await nextYear();
+}
+
+function autoNext(){
+    if(autoTimer) clearInterval(autoTimer);
+    autoTimer = setInterval(()=>{
+        if(game.isDead || !$("eventPanel") || !$("eventPanel").classList.contains("hide")) return;
+        nextYear();
+    },1400);
+}
+
+function stopAuto(){
+    if(autoTimer){ clearInterval(autoTimer); autoTimer = null; }
+}
+
+// ==================== 死亡判定 ====================
+function checkDeath(){
+    if (game.isDead) return true;
+
+    let ageRate = 0;
+    if (game.age >= 80) ageRate += 0.12;
+    if (game.age >= 90) ageRate += 0.3;
+    if (game.age >= 100) ageRate += 0.7;
+
+    let physRate = 0;
+    if (game.attr.phys < 15) physRate += 0.2;
+    if (game.attr.phys < 8) physRate += 0.4;
+    if (game.attr.phys <= 0) physRate += 0.99;
+
+    let mindRate = 0;
+    if (game.attr.mind < 10) mindRate += 0.18;
+    if (game.attr.mind <= 0) mindRate += 0.95;
+
+    const totalRate = ageRate + physRate + mindRate;
+
+    if (Math.random() < totalRate) {
+        game.isDead = true;
+        stopAuto();
+        return true;
+    }
+    return false;
+}
+
+// ==================== AI结局总结 ====================
+async function showEnd() {
+    stopAuto();
+    const lifeHistory = game.history.map(h => `${h.age}岁：${h.text}`).slice(-15).join('\n');
+    
+    const prompt = `
+你是一位史诗传记作家，请根据以下角色的一生经历，撰写一段自然、感人且贴合世界观的结局总结。
+要求：
+1. 开头以一句符合角色当前状态的自然死亡原因或寿终方式引出（避免生硬宣布）。
+2. 总结一生核心轨迹，需体现世界观、种族、出身、天赋以及玩家关键选择的影响。
+3. 文字优美凝练，100~180字，无额外格式，无前缀。
+4. 必须严格基于提供的信息进行创作，切勿凭空编造不相关的元素。
+
+【世界观】${game.world}
+【种族】${game.race}
+【出身】${game.born}
+【天赋】${game.talents.join('、')}
+【寿命】${game.age}岁
+【最终属性】${getAttrSummary()}
+【世界背景】${game.worldEvent || '无特殊事件'}
+【关键经历】
+${lifeHistory}
+【最终职业】${game.profession || '无'}
+`;
+
+    const endText = await ai(prompt);
+    $("endContent").innerText = endText;
+    $("gamePanel").classList.add("hide");
+    $("endPanel").classList.remove("hide");
+}
+
+// ================== 普通年份描述（有概率包含世界动向） ==================
+async function getNormalYearDesc(){
+    const recent = game.history.slice(-3);
+    const recentHist = recent.map(h=>`${h.age}岁:${h.text}`).join('；') || '无';
+    const stage = getAgeStage(game.age);
+    
+    // 50% 概率加入世界动向
+    const includeWorld = Math.random() < 0.5;
+    const worldContext = includeWorld ? `\n世界动态：${game.worldEvent || '暂无大事'}` : '';
+
+    const prompt = `
+你是一位文笔多变的传记作家，需要为角色某一年创作一句独特的年度片段。
+
+【角色信息】
+世界观：${game.world} | 种族：${game.race} | 出身：${game.born}
+性格：${game.charDesc}
+天赋：${game.talents.join('、')}
+年龄：${game.age}岁（${stage}）
+当前状态：${getAttrSummary()}
+近期经历：${recentHist}
+长期影响：${game.impact||'无'}${worldContext}
+职业：${game.profession || '未定'}
+
+【创作要求】
+1. 输出必须是 **一句具体、可感、不超过36个汉字的描述**，只输出句子，无任何额外内容。
+2. **严禁重复近期经历中已出现的事件类型**。
+3. 每次创作必须换一个叙事角度，不要连续两次相同。
+4. 句子必须精确反映角色 **当前年龄阶段的真实可能**。
+5. 需考虑世界动态和属性状态，例如资源匮乏时不应描写奢侈，体质虚弱时不写剧烈运动。
+
+【严格禁止】
+- “生活平淡”“又过了一年”等笼统概括
+- 与近期经历雷同的事件
+- 超过36个汉字
+
+示例（仅供参考）：
+- “在街角茶摊听老乞丐敲响竹梆子，想起亡父”
+- “第一次用道术点燃火把，却烧了半边眉毛”
+`;
+    let txt = await ai(prompt);
+    return txt.trim().slice(0,48);
+}
+
+async function nextYear(){
+    if(game.isDead) return;
+    stopAuto();
+    game.age++;
+    
+    await updateWorldEvent().catch(e => console.error("世界事件更新失败", e));
+    
+    const stage = getAgeStage(game.age);
+
+    let base = {wealth:0, social:0, res:0, phys:0, mind:0};
+    if(game.age <= 25){ base.phys +=1; base.mind +=1; }
+    if(game.age >= 60){ base.phys -=1; }
+
+    let impactDesc = "";
+    if(game.impact && game.age - game.lastImpactAge <=3) impactDesc = `【受前期影响】`;
+
+    const hasEvent = Math.random() < 0.35;
+    if(!hasEvent){
+        let normalText = await getNormalYearDesc();
+        const text = impactDesc + normalText;
+        
+        game.attr.wealth = Math.max(0, Math.min(100, game.attr.wealth + base.wealth));
+        game.attr.social = Math.max(0, Math.min(100, game.attr.social + base.social));
+        game.attr.res = Math.max(0, Math.min(100, game.attr.res + base.res));
+        game.attr.phys = Math.max(0, Math.min(100, game.attr.phys + base.phys));
+        game.attr.mind = Math.max(0, Math.min(100, game.attr.mind + base.mind));
+
+        game.history.push({age:game.age, text, attr:`财富${base.wealth>=0?'+'+base.wealth:base.wealth},人脉${base.social>=0?'+'+base.social:base.social},资源${base.res>=0?'+'+base.res:base.res},体质${base.phys>=0?'+'+base.phys:base.phys},心智${base.mind>=0?'+'+base.mind:base.mind}`});
+        refreshUI();
+        
+        if(checkDeath()){ await showEnd(); return; }
+        autoNext();
+        return;
+    }
+
+    // 事件生成
+    const optionListEl = $("optionList");
+    if (optionListEl) optionListEl.innerHTML = "";
+    game.selected = "";
+    if ($("customAction")) $("customAction").value = "";
+
+    const eventPanelEl = $("eventPanel");
+    const loadingTipEl = $("loadingTip");
+    const eventContentEl = $("eventContent");
+    
+    if (eventPanelEl) eventPanelEl.classList.remove("hide");
+    if (loadingTipEl) loadingTipEl.classList.remove("hide");
+    if (eventContentEl) eventContentEl.classList.add("hide");
+
+    const recentHist = game.history.slice(-3).map(h=>`${h.age}岁:${h.text}`).join('；') || '无';
+    
+    // 50% 概率加入世界动向
+    const includeWorld = Math.random() < 0.5;
+    const worldContext = includeWorld ? `\n世界动态：${game.worldEvent || '暂无大事'}` : '';
+    
+    const prompt = `
+你是一位善于制造戏剧冲突的作家，需为角色人生中的一个特定年份创作一个 **完全独立的年度事件**，不能是跨年流水账，也不能与近期经历重复。
+
+【角色信息】
+世界观：${game.world}
+种族：${game.race}
+出身：${game.born}
+性格：${game.charDesc}
+天赋：${game.talents.join('、')}
+年龄：${game.age}岁（${stage}）
+近期经历：${recentHist}
+长期影响：${game.impact||'无'}${worldContext}
+属性状态：${getAttrSummary()}
+职业：${game.profession || '未定'}
+
+【事件创作铁律】
+1. 时间边界：事件必须在 **当年内发生并结束**，绝对禁止“第一年…第二年…”或“从此之后…”的跨年叙述。
+2. 新颖性：事件核心 **不能与近期经历中的事件类型相同**。
+3. 因果闭环：事件必须有触发原因 → 发展过程 → 本年内的明确结果，不能只写开头。
+4. 感官细节：至少包含 **一个具体的感官细节**（声音、气味、触感、光线等），并体现 **角色此刻的一种清晰情绪**。
+5. 字数限制：描述在 **60~80字** 之间，不能太简略。
+
+【输出格式】
+事件：具体事件描述
+（只输出这一行，禁止任何额外内容）
+`;
+
+    const res = await ai(prompt);
+    const evMatch = res.match(/事件：([\s\S]*)/);
+    const ev = evMatch?.[1]?.trim() || "发生了一件事";
+
+    game.history.push({age:game.age, text:impactDesc+ev});
+    refreshUI();
+    
+    if (loadingTipEl) loadingTipEl.classList.add("hide");
+    if ($("eventText")) $("eventText").innerText = ev;
+    if (eventContentEl) eventContentEl.classList.remove("hide");
+
+    await genOptions();
+}
+
+async function genOptions(){
+    const eventText = $("eventText")?.innerText || "";
+    
+    // 50% 概率加入世界动向
+    const includeWorld = Math.random() < 0.5;
+    const worldContext = includeWorld ? `\n【当前世界背景】${game.worldEvent || '暂无大事'}` : '';
+    
+    const prompt = `
+你是一个选项生成器，基于当前事件设计4个不同的行动选择。
+世界观：${game.world}
+年龄：${game.age}岁
+事件：${eventText}
+天赋：${game.talents.join('、')}
+当前属性状态：${getAttrSummary()}${worldContext}
+职业：${game.profession || '未定'}
+
+要求：
+1. 每个选项用一行表示，格式严格为：选项描述|属性变化|未来影响
+   示例：果断出手|财富+2,人脉-1,资源+1,体质-1,心智+2|高风险高收益
+2. 属性变化部分必须使用“属性名+数值”格式，数值前必须有正负号（如财富+3,体质-2），各属性间用英文逗号分隔。
+3. 未来影响用简短词语概括。
+4. 只输出这4行，不输出任何额外文字。
+`;
+
+    const optRes = await ai(prompt);
+    const list = $("optionList");
+    if (!list) return;
+    list.innerHTML = "";
+
+    let lines = optRes.split('\n').map(l=>l.trim()).filter(l=>l.includes('|') && l.split('|').length>=3);
+    if(lines.length<4) lines = [
+        "稳妥应对|财富+0,人脉+1,资源+0,体质+0,心智+1|平稳成长",
+        "主动出击|财富+2,人脉-1,资源+1,体质-1,心智+2|高风险高收益",
+        "寻求帮助|财富-2,人脉+3,资源+1,体质+0,心智+0|获得支持",
+        "静观其变|财富+0,人脉+0,资源+0,体质+1,心智-1|保全自身"
+    ];
+    lines = lines.slice(0,4);
+
+    lines.forEach(line => {
+        const parts = line.split('|').map(i=>i.trim());
+        if(parts.length<3) return;
+        const [c,a,im] = parts;
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = c;
+        btn.onclick = () => {
+            document.querySelectorAll(".option-btn").forEach(x=>x.classList.remove("active"));
+            btn.classList.add("active");
+            game.selected = c;
+            game.eventAttr = a;
+            game.eventImpact = im;
+        };
+        list.appendChild(btn);
+    });
+}
+
+async function confirmChoice() {
+    const custom = $("customAction")?.value.trim() || "";
+    if(!game.selected && !custom) { alert("请选择或输入行动！"); return; }
+
+    let attr, impact;
+    if(custom) {
+        const r = await ai(`行动：${custom}。请严格用“属性变化|影响描述”格式回复，属性变化如“财富+2,人脉-1,资源+3,体质+0,心智+1”。`);
+        const parts = r.split('|').map(p=>p.trim());
+        attr = parts[0] || "财富+0,人脉+0,资源+0,体质+0,心智+0";
+        impact = parts[1] || "无影响";
+        game.selected = custom;
+    } else {
+        attr = game.eventAttr;
+        impact = game.eventImpact;
+    }
+
+    const ac = parseAttrChange(attr);
+    game.attr.wealth = Math.max(0, Math.min(100, game.attr.wealth + ac.wealth));
+    game.attr.social = Math.max(0, Math.min(100, game.attr.social + ac.social));
+    game.attr.res = Math.max(0, Math.min(100, game.attr.res + ac.res));
+    game.attr.phys = Math.max(0, Math.min(100, game.attr.phys + ac.phys));
+    game.attr.mind = Math.max(0, Math.min(100, game.attr.mind + ac.mind));
+
+    const lastIdx = game.history.length-1;
+    if(lastIdx>=0){
+        game.history[lastIdx].choice = game.selected;
+        game.history[lastIdx].result = await ai(`用一句话描述选择结果：${game.selected}（发生在${game.world}，角色${game.age}岁）`);
+        game.history[lastIdx].attr = attr;
+    }
+    
+    game.impact = impact;
+    game.lastImpactAge = game.age;
+    
+    await updateProfession().catch(e => console.error("职业更新失败", e));
+    
+    $("eventPanel").classList.add("hide");
+    refreshUI();
+
+    if(checkDeath()){ await showEnd(); return; }
+    autoNext();
+}
+
+function saveGame() {
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(game));alert("✅ 保存成功");}catch(e){alert("❌ 保存失败");}
+}
+function loadGame() {
+    const s=localStorage.getItem(SAVE_KEY);
+    if(!s)return alert("❌ 无存档");
+    game=JSON.parse(s);
+    if (!game.worldEvent) game.worldEvent = "";
+    if (!game.profession) game.profession = "";
+    $("startPanel").classList.add("hide");
+    $("gamePanel").classList.remove("hide");
+    refreshUI();
+    alert("✅ 读取成功");
+}
+function deleteSave(){if(confirm("确定删除存档？")){localStorage.removeItem(SAVE_KEY);alert("✅ 已删除");}}
+function restartGame(){stopAuto();game.isDead=false;$("gamePanel").classList.add("hide");$("endPanel").classList.add("hide");$("startPanel").classList.remove("hide");genTalents();}
+</script>
+</body>
+</html>
